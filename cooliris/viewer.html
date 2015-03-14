@@ -1,35 +1,74 @@
 <!doctype html>
 <html>
-<head>
-  <title>Cooliris Photo Wall</title>
-  <script type="text/javascript">
-    var urlFeed;
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script src="cooliris-embed.js"></script>
+    <script type="text/javascript">
+      var EMBED_WALL_URL = 'cooliris.swf';
+      
+      // Registers callbacks to be invoked as the user interacts with the wall.
+      window.cooliris.onEmbedInitialized = function() {
+        cooliris.embed.setCallbacks({
+          feedload: function(itemsLoaded) {
+            log('[LOADED] ' + itemsLoaded + ' items');
+          },
+          feederror: function(error) {
+            log('[LOAD-ERROR] ' + error);
+          },
+          select: function(item) {
+            log("[SELECTED] " + JSON.stringify(item, null, 2));
+          },
+          deselect: function(item) {
+            log("[DESELECTED] " + JSON.stringify(item, null, 2));
+          }
+        });
+      };
 
-    function GetFeedUrl()
-    {
-      urlFeed = location.search.split('feed=')[1];
-      alert(urlFeed);
-    }
-  </script>
-</head>
-<body onload="GetFeedUrl()">
-  <object id="test" classid="test" width="600" height="600">
-    <param name="movie" value="https://kheresy.github.io/cooliris/cooliris.swf"/>
-    <param name="allowFullScreen" value="true"/>
-    <param name="allowScriptAccess" value="never"/>
-    <param name="bgColor" value="black"/>
-    <param name="flashvars" value="feed=http://photos.googleapis.com/data/feed/base/user/106811269362744842276/albumid/6124227378087170769?alt=rss&kind=photo&hl=zh_TW" />
-    <param name="wmode" value="opaque"/>
-    <embed type="application/x-shockwave-flash"
-      src="https://kheresy.github.io/cooliris/cooliris.swf"
-      width="600"
-      height="600"
-      allowfullscreen="true"
-      allowscriptaccess="never"
-      bgcolor="black"
-      flashvars="feed=http://photos.googleapis.com/data/feed/base/user/106811269362744842276/albumid/6124227378087170769?alt=rss&kind=photo&hl=zh_TW"
-      wmode="opaque" />
-  </object> 
-</body>
+      // Convenience function that replaces the |replaceElementId| HTML element with
+      // a wall displaying the contents of |feedUrl|. If |useScripting| is true,
+      // the onEmbedInitialized() callback will be invoked and the cooliris-embed.js
+      // script must be included.
+      function embedWall(replaceElementId, feedUrl, width, height, useScripting) {
+        swfobject.embedSWF(EMBED_WALL_URL,
+          replaceElementId,  // The ID of the HTML element to replace with the Embed Wall.
+          width,             // Width of the Flash content.
+          height,            // Height of the Flash content.
+          '9.0.0',           // Minimum supported version of Flash.
+          '',
+          {feed: feedUrl},
+          {AllowFullScreen: 'true', AllowScriptAccess: useScripting ? 'always' : 'never'});
+      }
+      
+      // Appends a log message to the demo page, to show how events are generated.
+      function log(message) {
+        message = message.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/&/g,'&amp;');
+        document.getElementById('demo-log').innerHTML += '<div>' + message + '</div>';
+      }
+      
+      // Loads the wall with the given initial URL.
+      embedWall('wall', 'api://www.flickr.com/?', 600, 450, true);
+      
+      function setFeedUrl(url) {
+        document.getElementById('demo-log').innerHTML = '';
+        cooliris.embed.setFeedURL(url);
+      }
+    </script>
+  </head>
+  <body>
+    Click a link to load an example:
+    <ul>
+      <li><a href="#" onclick="setFeedUrl('api://www.flickr.com/?user=flickr')">Flickr Photostream</a> (api://www.flickr.com/?user=flickr)</li>
+      <li><a href="#" onclick="setFeedUrl('api://www.flickr.com/?user=flickr&amp;album=72157641288898144')">Flickr Photoset</a> (api://www.flickr.com/?user=flickr&amp;album=72157641288898144)</li>
+      <li><a href="#" onclick="setFeedUrl('api://www.youtube.com/?user=YouTube')">YouTube Channel</a> (api://www.youtube.com/?user=YouTube)</li>
+      <li>If you have been using a Media RSS feed, you can simply use an HTTP(S) URL to your feed.</li>
+      <li>Warning: api:// URLs rely on API keys that may stop working in the future.</li>
+    </ul>
+    <div id="wall"></div>
+
+    <div id="demo-log-box">
+      <b>Console</b>
+      <hr size=1 color="#eee">
+      <div id="demo-log"></div>
+    </div>
+  </body>
 </html>
-
