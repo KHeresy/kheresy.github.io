@@ -45,8 +45,10 @@
         document.getElementById('demo-log').innerHTML += '<div>' + message + '</div>';
       }
       
-      // Loads the wall with the given initial URL.
-      embedWall('wall', location.search.split('feed=')[1], window.innerWidth, window.innerHeight, true);
+      function init()
+      {
+        embedWall('wall', location.search.split('feed=')[1], window.innerWidth + "px", window.innerHeight + "px", true);
+      }
       
       function setFeedUrl(url) {
         document.getElementById('demo-log').innerHTML = '';
@@ -54,7 +56,7 @@
       }
     </script>
   </head>
-  <body>
+  <body onload="init()">
     <div id="wall"></div>
 
     <div id="demo-log-box">
