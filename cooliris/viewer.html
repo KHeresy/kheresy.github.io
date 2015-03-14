@@ -46,7 +46,7 @@
       }
       
       // Loads the wall with the given initial URL.
-      embedWall('wall', 'api://www.flickr.com/?', 600, 450, true);
+      embedWall('wall', location.search.split('feed=')[1], 600, 450, true);
       
       function setFeedUrl(url) {
         document.getElementById('demo-log').innerHTML = '';
@@ -55,14 +55,6 @@
     </script>
   </head>
   <body>
-    Click a link to load an example:
-    <ul>
-      <li><a href="#" onclick="setFeedUrl('api://www.flickr.com/?user=flickr')">Flickr Photostream</a> (api://www.flickr.com/?user=flickr)</li>
-      <li><a href="#" onclick="setFeedUrl('api://www.flickr.com/?user=flickr&amp;album=72157641288898144')">Flickr Photoset</a> (api://www.flickr.com/?user=flickr&amp;album=72157641288898144)</li>
-      <li><a href="#" onclick="setFeedUrl('api://www.youtube.com/?user=YouTube')">YouTube Channel</a> (api://www.youtube.com/?user=YouTube)</li>
-      <li>If you have been using a Media RSS feed, you can simply use an HTTP(S) URL to your feed.</li>
-      <li>Warning: api:// URLs rely on API keys that may stop working in the future.</li>
-    </ul>
     <div id="wall"></div>
 
     <div id="demo-log-box">
