@@ -46,7 +46,7 @@
       }
       
       // Loads the wall with the given initial URL.
-      embedWall('wall', location.search.split('feed=')[1], 600, 450, true);
+      embedWall('wall', location.search.split('feed=')[1], window.innerWidth, window.innerHeight, true);
       
       function setFeedUrl(url) {
         document.getElementById('demo-log').innerHTML = '';
